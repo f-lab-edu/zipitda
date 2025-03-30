@@ -7,7 +7,10 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "likes")
+@Table(name = "likes",
+       uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"user_id", "target_type", "target_id"})
+})
 @Getter
 @Setter
 @NoArgsConstructor

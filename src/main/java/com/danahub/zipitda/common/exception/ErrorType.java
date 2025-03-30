@@ -50,6 +50,7 @@ public enum ErrorType {
     PRODUCT_ALREADY_EXISTS(40904, HttpStatus.CONFLICT, "해당 상품이 이미 존재합니다."),
     SHIPPING_ALREADY_PROCESSED(40905, HttpStatus.CONFLICT, "배송이 이미 처리 중이거나 완료되었습니다."),
     LOCK_FAILED(40906, HttpStatus.CONFLICT, "재고 처리 중 잠금에 실패했습니다. 다시 시도해주세요."),
+    ALREADY_LIKED(40907, HttpStatus.CONFLICT, "이미 좋아요한 게시글입니다."),
 
     // 410 GONE - 리소스 만료
     VERIFICATION_EXPIRED(41000, HttpStatus.GONE, "인증 코드가 만료되었습니다."),

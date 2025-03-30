@@ -31,8 +31,7 @@ public class ImageController {
 
     @DeleteMapping
     @Operation(summary = "이미지 삭제 API", description = "사용자가 업로드한 이미지를 삭제합니다. imageUrl은 암호화된 값 그대로 전달.")
-    public void deleteImageByUrl(@RequestParam String imageUrl,
-                                                                 @AuthenticationPrincipal CustomUserDetails user) {
+    public void deleteImageByUrl(@RequestParam String imageUrl, @AuthenticationPrincipal CustomUserDetails user) {
         imageService.deleteImageByUrl(imageUrl, user);
         ResponseEntity.ok(CommonResponse.success());
     }

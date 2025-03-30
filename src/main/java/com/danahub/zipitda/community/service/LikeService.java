@@ -6,6 +6,7 @@ import com.danahub.zipitda.community.domain.Like;
 import com.danahub.zipitda.community.repository.LikeRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -32,7 +33,12 @@ public class LikeService {
                 .targetId(postId)
                 .build();
 
-        likeRepository.save(like);
+        try {
+            likeRepository.save(like);
+        } catch (DataIntegrityViolationException e) {
+            // 이미 존재하는 좋아요일 경우
+            throw new ZipitdaException(ErrorType.ALREADY_LIKED);
+        }
     }
 
     public void unlikePost(Long userId, Long postId) {
