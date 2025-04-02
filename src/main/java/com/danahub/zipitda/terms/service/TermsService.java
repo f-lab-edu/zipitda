@@ -5,6 +5,7 @@ import com.danahub.zipitda.common.exception.ZipitdaException;
 import com.danahub.zipitda.store.dto.ProductResponseDto;
 import com.danahub.zipitda.terms.domain.Terms;
 import com.danahub.zipitda.terms.domain.TermsId;
+import com.danahub.zipitda.terms.dto.TermsListResponseDto;
 import com.danahub.zipitda.terms.dto.TermsRequestDto;
 import com.danahub.zipitda.terms.dto.TermsResponseDto;
 import com.danahub.zipitda.terms.mapper.TermsMapper;
@@ -24,10 +25,18 @@ public class TermsService {
 
     private final TermsRepository termsRepository;
 
-    // 약관 리스트 가져오기
     public Page<TermsResponseDto> getAllTerms(Pageable pageable) {
         return termsRepository.findAll(pageable)
                 .map(TermsResponseDto::fromEntity);
+    }
+
+    // 최신 약관 리스트 가져오기
+    public TermsListResponseDto getAllLatestTerms() {
+        List<Terms> latestTerms = termsRepository.findLatestTermsByTitle();
+        List<TermsResponseDto> dtoList = latestTerms.stream()
+                .map(TermsResponseDto::fromEntity)
+                .toList();
+        return TermsListResponseDto.from(dtoList);
     }
 
     // 특정 약관 가져오기 (복합키)

@@ -2,6 +2,7 @@ package com.danahub.zipitda.terms.controller;
 
 import com.danahub.zipitda.common.dto.CommonResponse;
 import com.danahub.zipitda.terms.domain.Terms;
+import com.danahub.zipitda.terms.dto.TermsListResponseDto;
 import com.danahub.zipitda.terms.dto.TermsRequestDto;
 import com.danahub.zipitda.terms.dto.TermsResponseDto;
 import com.danahub.zipitda.terms.service.TermsService;
@@ -27,9 +28,14 @@ public class TermsController {
     private final TermsService termsService;
 
     @GetMapping
-    @Operation(summary = "약관 전체 조회 API", description = "약관을 전체 조회합니다.")
+    @Operation(summary = "전체 약관 페이징 조회", description = "모든 약관(version 포함)을 페이징하여 조회합니다.")
     public CommonResponse<Page<TermsResponseDto>> getAllTerms(Pageable pageable) {
         return CommonResponse.success(termsService.getAllTerms(pageable));
+    }
+    @GetMapping("/latest")
+    @Operation(summary = "최신 약관 목록 조회", description = "약관 제목별 최신 버전만 조회합니다.")
+    public CommonResponse<TermsListResponseDto> getAllLatestTerms() {
+        return CommonResponse.success(termsService.getAllLatestTerms());
     }
 
     @GetMapping("/{title}/{version}")
