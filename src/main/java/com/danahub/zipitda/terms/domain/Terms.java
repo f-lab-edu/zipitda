@@ -21,6 +21,6 @@ public class Terms extends BaseEntity {
     private String content; // 약관 내용
 
     @Column(nullable = false)
-    private Boolean isRequired; // 필수 약관 여부 (true: 필수, false: 선택)
+    private Boolean required; // 필수 약관 여부 (true: 필수, false: 선택)
 
 }

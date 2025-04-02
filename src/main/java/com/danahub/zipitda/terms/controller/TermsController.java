@@ -1,10 +1,15 @@
 package com.danahub.zipitda.terms.controller;
 
+import com.danahub.zipitda.common.dto.CommonResponse;
 import com.danahub.zipitda.terms.domain.Terms;
 import com.danahub.zipitda.terms.dto.TermsResponseDto;
 import com.danahub.zipitda.terms.service.TermsService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,35 +22,23 @@ import java.util.List;
 @RequestMapping("/api/terms")
 @Slf4j
 @RequiredArgsConstructor
+@Tag(name = "term", description = "약관 API")
 public class TermsController {
 
     private final TermsService termsService;
 
-    // 약관 리스트 가져오기
-    @GetMapping("/list")
-    public ResponseEntity<List<TermsResponseDto>> getTermsList() {
-        log.info("[TermsController] /api/terms 요청 수신 - 약관 리스트 조회 시작");
-        List<TermsResponseDto> termsList = termsService.getTermsList();
-
-        if (termsList.isEmpty()) {
-            log.warn("[TermsController] 약관 데이터가 없습니다.");
-            return ResponseEntity.noContent().build(); // 204 No Content 반환
-        }
-
-        log.info("[TermsController] 약관 리스트 응답 성공 - 총 {}건 반환", termsList.size());
-        return ResponseEntity.ok(termsList); // 200 OK 반환
+    @GetMapping
+    @Operation(summary = "약관 전체 조회 API", description = "약관을 전체 조회합니다.")
+    public CommonResponse<Page<TermsResponseDto>> getAllTerms(Pageable pageable) {
+        return CommonResponse.success(termsService.getAllTerms(pageable));
     }
 
-    // 특정 약관 가져오기 (복합키)
     @GetMapping("/{title}/{version}")
-    public ResponseEntity<Terms> getTermsByTitleAndVersion(
+    @Operation(summary = "특정 약관 조회 API", description = "약관제목과 버전으로 특정 약관을 가져옵니다.")
+    public CommonResponse<TermsResponseDto> getTermsByTitleAndVersion(
             @PathVariable String title,
             @PathVariable Integer version) {
-        log.info("[TermsController] /api/terms/{}/{} 요청 수신 - 특정 약관 조회 시작", title, version);
-        Terms terms = termsService.getTermsByTitleAndVersion(title, version);
-
-        log.info("[TermsController] 특정 약관 조회 성공 - title: {}, version: {}", title, version);
-        return ResponseEntity.ok(terms); // 200 OK 반환
+        return CommonResponse.success(termsService.getTermsByTitleAndVersion(title, version));
     }
 
 }
