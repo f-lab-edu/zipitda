@@ -2,19 +2,18 @@ package com.danahub.zipitda.terms.controller;
 
 import com.danahub.zipitda.common.dto.CommonResponse;
 import com.danahub.zipitda.terms.domain.Terms;
+import com.danahub.zipitda.terms.dto.TermsRequestDto;
 import com.danahub.zipitda.terms.dto.TermsResponseDto;
 import com.danahub.zipitda.terms.service.TermsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -39,6 +38,27 @@ public class TermsController {
             @PathVariable String title,
             @PathVariable Integer version) {
         return CommonResponse.success(termsService.getTermsByTitleAndVersion(title, version));
+    }
+
+    @PostMapping
+    @Operation(summary = "약관 등록 API", description = "신규 약관을 등록합니다.")
+    public void createTerms(@Valid @RequestBody TermsRequestDto requestDto) {
+        termsService.createTerms(requestDto);
+    }
+
+    @PutMapping("/{title}/{version}")
+    @Operation(summary = "약관 수정 API", description = "특정 약관의 내용을 수정합니다.")
+    public void updateTerms(
+            @PathVariable String title,
+            @PathVariable Integer version,
+            @Valid @RequestBody TermsRequestDto requestDto) {
+        termsService.updateTerms(title, version, requestDto);
+    }
+
+    @DeleteMapping("/{title}/{version}")
+    @Operation(summary = "약관 삭제 API", description = "특정 약관을 삭제합니다.")
+    public void deleteTerms(@PathVariable String title, @PathVariable Integer version) {
+        termsService.deleteTerms(title, version);
     }
 
 }
