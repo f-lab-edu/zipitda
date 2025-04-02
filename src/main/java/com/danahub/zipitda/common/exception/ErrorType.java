@@ -41,6 +41,7 @@ public enum ErrorType {
     SHIPPING_NOT_FOUND(40406, HttpStatus.NOT_FOUND, "배송 정보를 찾을 수 없습니다."),
     CART_EMPTY(40407, HttpStatus.NOT_FOUND, "장바구니가 비었습니다."),
     IMAGE_NOT_FOUND(40408, HttpStatus.NOT_FOUND, "이미지를 찾을 수 없습니다."),
+    TERM_NOT_FOUND(40409, HttpStatus.NOT_FOUND, "약관을 찾을 수 없습니다."),
 
     // 409 CONFLICT - 리소스 충돌
     DUPLICATE_EMAIL(40900, HttpStatus.CONFLICT, "이미 사용 중인 이메일입니다."),
@@ -51,6 +52,8 @@ public enum ErrorType {
     SHIPPING_ALREADY_PROCESSED(40905, HttpStatus.CONFLICT, "배송이 이미 처리 중이거나 완료되었습니다."),
     LOCK_FAILED(40906, HttpStatus.CONFLICT, "재고 처리 중 잠금에 실패했습니다. 다시 시도해주세요."),
     ALREADY_LIKED(40907, HttpStatus.CONFLICT, "이미 좋아요한 게시글입니다."),
+    TERM_ALREADY_EXISTS(40908, HttpStatus.CONFLICT, "해당 약관(title, version)은 이미 존재합니다."),
+
 
     // 410 GONE - 리소스 만료
     VERIFICATION_EXPIRED(41000, HttpStatus.GONE, "인증 코드가 만료되었습니다."),
@@ -62,6 +65,8 @@ public enum ErrorType {
     VERIFICATION_CODE_MISMATCH(42203, HttpStatus.UNPROCESSABLE_ENTITY, "인증 코드가 일치하지 않습니다."),
     VERIFICATION_NOT_COMPLETED(42205, HttpStatus.UNPROCESSABLE_ENTITY, "인증이 완료되지 않았습니다."),
     INVALID_ORDER_STATUS_TRANSITION(42206, HttpStatus.UNPROCESSABLE_ENTITY, "잘못된 주문 상태 전환입니다."),
+    INVALID_TERM_VERSION(42210, HttpStatus.UNPROCESSABLE_ENTITY, "유효하지 않은 약관 버전입니다."),
+    INVALID_TERM_TITLE(42211, HttpStatus.UNPROCESSABLE_ENTITY, "유효하지 않은 약관 제목입니다."),
 
     // 500 INTERNAL SERVER ERROR - 서버 오류
     INTERNAL_SERVER_ERROR(50000, HttpStatus.INTERNAL_SERVER_ERROR, "내부 서버 오류가 발생했습니다."),
