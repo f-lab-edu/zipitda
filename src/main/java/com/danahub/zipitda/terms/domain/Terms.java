@@ -23,4 +23,8 @@ public class Terms extends BaseEntity {
     @Column(nullable = false)
     private Boolean required; // 필수 약관 여부 (true: 필수, false: 선택)
 
+    @Version
+    @Column(name = "version_number")
+    private Long versionNumber; // 낙관적 락용 필드
+
 }

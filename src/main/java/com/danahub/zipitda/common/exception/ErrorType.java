@@ -53,7 +53,7 @@ public enum ErrorType {
     LOCK_FAILED(40906, HttpStatus.CONFLICT, "재고 처리 중 잠금에 실패했습니다. 다시 시도해주세요."),
     ALREADY_LIKED(40907, HttpStatus.CONFLICT, "이미 좋아요한 게시글입니다."),
     TERM_ALREADY_EXISTS(40908, HttpStatus.CONFLICT, "해당 약관(title, version)은 이미 존재합니다."),
-
+    CONCURRENT_UPDATE_CONFLICT(40909, HttpStatus.CONFLICT, "다른 사용자에 의해 약관이 수정되었습니다. 최신 내용을 확인해주세요."),
 
     // 410 GONE - 리소스 만료
     VERIFICATION_EXPIRED(41000, HttpStatus.GONE, "인증 코드가 만료되었습니다."),

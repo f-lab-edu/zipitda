@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -63,16 +64,24 @@ public class TermsService {
         termsRepository.save(terms);
     }
 
-    // 약관 수정
     public void updateTerms(String title, Integer version, TermsRequestDto requestDto) {
         TermsId termsId = new TermsId(title, version);
         Terms terms = termsRepository.findById(termsId)
                 .orElseThrow(() -> new ZipitdaException(ErrorType.TERM_NOT_FOUND));
 
+        // 낙관적 락 적용 : 요청된 versionNumber와 DB 버전 비교
+        if (!terms.getVersionNumber().equals(requestDto.versionNumber())) {
+            throw new ZipitdaException(ErrorType.CONCURRENT_UPDATE_CONFLICT);
+        }
+
         terms.setContent(requestDto.content());
         terms.setRequired(requestDto.required());
 
-        termsRepository.save(terms);
+        try {
+            termsRepository.save(terms);
+        } catch (ObjectOptimisticLockingFailureException e) {
+            throw new ZipitdaException(ErrorType.CONCURRENT_UPDATE_CONFLICT);
+        }
     }
 
     // 약관 삭제

@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -46,12 +47,14 @@ public class TermsController {
         return CommonResponse.success(termsService.getTermsByTitleAndVersion(title, version));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     @Operation(summary = "약관 등록 API", description = "신규 약관을 등록합니다.")
     public void createTerms(@Valid @RequestBody TermsRequestDto requestDto) {
         termsService.createTerms(requestDto);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{title}/{version}")
     @Operation(summary = "약관 수정 API", description = "특정 약관의 내용을 수정합니다.")
     public void updateTerms(
@@ -61,6 +64,7 @@ public class TermsController {
         termsService.updateTerms(title, version, requestDto);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{title}/{version}")
     @Operation(summary = "약관 삭제 API", description = "특정 약관을 삭제합니다.")
     public void deleteTerms(@PathVariable String title, @PathVariable Integer version) {
