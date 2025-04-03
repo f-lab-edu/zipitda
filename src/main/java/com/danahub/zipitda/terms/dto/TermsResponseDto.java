@@ -1,14 +1,27 @@
 package com.danahub.zipitda.terms.dto;
 
+import com.danahub.zipitda.terms.domain.Terms;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import java.time.LocalDateTime;
 
-@Data
-public class TermsResponseDto {
-    private String title;
-    private int version;
-    private String content;
-    private boolean isRequired;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+public record TermsResponseDto(
+        String title,
+        Integer version,
+        String content,
+        Boolean required,
+        LocalDateTime createdAt,
+        LocalDateTime updatedAt
+) {
+        public static TermsResponseDto fromEntity(Terms terms) {
+                return new TermsResponseDto(
+                        terms.getId().getTitle(),           // 복합키에서 title 추출
+                        terms.getId().getVersion(),         // 복합키에서 version 추출
+                        terms.getContent(),
+                        terms.getRequired(),
+                        terms.getCreatedAt(),
+                        terms.getUpdatedAt()
+                );
+        }
 }
