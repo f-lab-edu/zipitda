@@ -55,13 +55,12 @@ public class TermsController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("/{title}/{version}")
+    @PutMapping("/{title}")
     @Operation(summary = "약관 수정 API", description = "특정 약관의 내용을 수정합니다.")
     public void updateTerms(
             @PathVariable String title,
-            @PathVariable Integer version,
             @Valid @RequestBody TermsRequestDto requestDto) {
-        termsService.updateTerms(title, version, requestDto);
+        termsService.updateTerms(title, requestDto);
     }
 
     @PreAuthorize("hasRole('ADMIN')")

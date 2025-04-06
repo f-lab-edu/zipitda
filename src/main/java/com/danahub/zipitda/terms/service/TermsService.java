@@ -12,6 +12,7 @@ import com.danahub.zipitda.terms.mapper.TermsMapper;
 import com.danahub.zipitda.terms.repository.TermsRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
@@ -64,22 +65,26 @@ public class TermsService {
         termsRepository.save(terms);
     }
 
-    public void updateTerms(String title, Integer version, TermsRequestDto requestDto) {
-        TermsId termsId = new TermsId(title, version);
-        Terms terms = termsRepository.findById(termsId)
-                .orElseThrow(() -> new ZipitdaException(ErrorType.TERM_NOT_FOUND));
+    public void updateTerms(String title, TermsRequestDto dto) {
+        // 해당 title의 최신 버전 조회
+        Integer latestVersion = termsRepository.findMaxVersionByTitle(title)
+                .orElse(0); // 없으면 첫 버전
 
-        // 낙관적 락 적용 : 요청된 versionNumber와 DB 버전 비교
-        if (!terms.getVersionNumber().equals(requestDto.versionNumber())) {
-            throw new ZipitdaException(ErrorType.CONCURRENT_UPDATE_CONFLICT);
-        }
+        int newVersion = latestVersion + 1;
 
-        terms.setContent(requestDto.content());
-        terms.setRequired(requestDto.required());
+        TermsId newId = new TermsId(title, newVersion);
 
+        // 새로운 약관 생성
+        Terms newTerms = new Terms();
+        newTerms.setId(newId);
+        newTerms.setContent(dto.content());
+        newTerms.setRequired(dto.required());
+
+        // insert 시도 → 동시 충돌 시 DB 제약조건(PK) 위반 발생
         try {
-            termsRepository.save(terms);
-        } catch (ObjectOptimisticLockingFailureException e) {
+            termsRepository.save(newTerms);
+        } catch (DataIntegrityViolationException e) {
+            // 다른 관리자가 같은 버전으로 먼저 저장한 경우 충돌
             throw new ZipitdaException(ErrorType.CONCURRENT_UPDATE_CONFLICT);
         }
     }
